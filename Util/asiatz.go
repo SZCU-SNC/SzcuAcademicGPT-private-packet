@@ -1,4 +1,4 @@
-package asiatz
+package Util
 
 import (
 	"fmt"
