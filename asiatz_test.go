@@ -1,6 +1,9 @@
 package asiatz
 
-import "testing"
+import (
+	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Util"
+	"testing"
+)
 
 type testConversion struct {
 	time     string
@@ -33,7 +36,7 @@ func TestAllConversions(t *testing.T) {
 		t.Run(timezone, func(t *testing.T) {
 			switch timezone {
 			case "Shanghai":
-				runConversionTests(t, tests, ShanghaiToUTC)
+				runConversionTests(t, tests, Util.ShanghaiToUTC)
 			// Others
 			default:
 				t.Errorf("Unexpected timezone %s", timezone)
