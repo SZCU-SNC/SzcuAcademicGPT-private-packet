@@ -1,8 +1,9 @@
 package asiatz
 
 import (
-	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Util"
 	"testing"
+
+	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Util"
 )
 
 type testConversion struct {
