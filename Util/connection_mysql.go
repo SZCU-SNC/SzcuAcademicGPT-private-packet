@@ -11,7 +11,7 @@ type Config struct {
 	Environment string `yaml:"environment"`
 }
 
-func initializeDatabase() (*sql.DB, error) {
+func InitializeDatabase() (*sql.DB, error) {
 	envConfigFile, err := os.ReadFile("config.yaml")
 	if err != nil {
 		return nil, fmt.Errorf("Failed to read the environment config file: %v", err)
