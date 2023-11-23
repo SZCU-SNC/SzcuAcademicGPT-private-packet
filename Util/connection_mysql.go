@@ -5,13 +5,9 @@ import (
 	"fmt"
 )
 
-type Config struct {
-	Environment string `yaml:"environment"`
-}
-
 func InitializeDatabase() (*sql.DB, error) {
 
-	var config, _ = ReadConfigFromYaml()
+	var config = GetConfigData()
 
 	var path = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		config["database"].(map[interface{}]interface{})["user"],
@@ -22,13 +18,13 @@ func InitializeDatabase() (*sql.DB, error) {
 	// 连接到数据库
 	db, err := sql.Open("mysql", path)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to connect to the database: %v", err)
+		return nil, fmt.Errorf("failed to connect to the database: %v", err)
 	}
 
 	// 测试数据库连接
 	err = db.Ping()
 	if err != nil {
-		return nil, fmt.Errorf("Failed to ping the database: %v", err)
+		return nil, fmt.Errorf("failed to ping the database: %v", err)
 	}
 
 	return db, nil

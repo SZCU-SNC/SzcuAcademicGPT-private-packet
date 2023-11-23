@@ -7,12 +7,22 @@ import (
 	"path/filepath"
 )
 
-// 全局config
-var configData map[string]interface{}
+// 私有类型，只能在包内访问,防止配置数据被修改
+type configData map[string]interface{}
+type Config struct {
+	Environment string `yaml:"environment"`
+}
+
+var config configData
+
+// GetConfigData 获取内存中config
+func GetConfigData() configData {
+	return config
+}
 
 // InitConfig 初始化全局config
 func InitConfig() {
-	configData, _ = ReadConfigFromYaml()
+	config, _ = ReadConfigFromYaml()
 }
 
 // ReadConfigFromYaml 当希望每次都从yaml查询时使用，优点是更新配置文件后不需要重启
