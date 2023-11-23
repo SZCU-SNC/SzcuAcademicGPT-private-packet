@@ -6,7 +6,7 @@ import (
 	"net/smtp"
 )
 
-func (receiver Config) name(to []string, subject string, context string, filePath string) {
+func (receiver Config) SendEmail(to []string, subject string, context string, filePath string) {
 
 	server := GetConfigData()["email"].(map[interface{}]interface{})["server"].(string)
 	auth := GetConfigData()["email"].(map[interface{}]interface{})["auth"].(map[interface{}]interface{})
