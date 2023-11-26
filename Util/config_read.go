@@ -31,7 +31,7 @@ func ReadConfigFromYaml() (map[string]interface{}, error) {
 	//获取main文件目录
 	mainDir, err := os.Getwd()
 
-	envConfigFile, err := os.ReadFile(filepath.Join(mainDir + "config.yaml"))
+	envConfigFile, err := os.ReadFile(filepath.Join(mainDir, "config.yaml"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read the environment config file: %v", err)
 	}
