@@ -33,6 +33,9 @@ func ReadConfigFromYaml() (map[string]interface{}, error) {
 
 	//获取main文件目录
 	mainDir, err := os.Getwd()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get the main directory: %v", err)
+	}
 
 	envConfigFile, err := os.ReadFile(filepath.Join(mainDir + "config.yaml"))
 	if err != nil {
@@ -46,19 +49,9 @@ func ReadConfigFromYaml() (map[string]interface{}, error) {
 		return nil, fmt.Errorf("failed to unmarshal the environment config file: %v", err)
 	}
 
-	// 选择要加载的配置文件
-	var configFile string
-	switch envConfig.Environment {
-	case "test":
-		configFile = "config-test.yaml"
-	case "prod":
-		configFile = "config-prod.yaml"
-	default:
-		configFile = "config-dev.yaml"
-	}
-
 	// 读取选择的配置文件
-	configFileData, err := os.ReadFile(configFile)
+	GetENV()
+	configFileData, err := os.ReadFile(ENV_YAML)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read the config file: %v", err)
 	}
@@ -75,28 +68,35 @@ func ReadConfigFromYaml() (map[string]interface{}, error) {
 
 var ENV_YAML string
 
+// 获取运行环境配置
 func GetENV() {
-	env, err := GetConfigValue("config.yaml", "environment")
+	mainDir, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	configfile := filepath.Join(mainDir, "config.yaml")
+	env, err := GetConfigValue(configfile, "environment")
 	if err != nil {
 		panic(err)
 	}
 	switch env {
 	case "dev":
-		ENV_YAML = "config-dev.yaml"
+		ENV_YAML = filepath.Join(mainDir, "config-dev.yaml")
 		gin.SetMode(gin.DebugMode)
 	case "prod":
-		ENV_YAML = "config-prod.yaml"
+		ENV_YAML = filepath.Join(mainDir, "config-prod.yaml")
 		gin.SetMode(gin.ReleaseMode)
 	case "test":
-		ENV_YAML = "config-test.yaml"
+		ENV_YAML = filepath.Join(mainDir, "config-test.yaml")
 		gin.SetMode(gin.TestMode)
 	default:
-		ENV_YAML = "config.dev.yaml"
+		ENV_YAML = filepath.Join(mainDir, "config-dev.yaml")
 		gin.SetMode(gin.DebugMode)
 	}
 	fmt.Println("ENV_YAML: ", ENV_YAML)
 }
 
+// 直接获取配置项及其结果
 func GetConfigValue(filePath, key string) (string, error) {
 	// 读取YAML文件
 	data, err := os.ReadFile(filePath)
