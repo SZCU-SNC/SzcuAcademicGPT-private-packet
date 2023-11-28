@@ -105,7 +105,7 @@ func GetConfigValue(filePath, key string) (string, error) {
 	}
 
 	// 将YAML内容解析到map中
-	var config map[string]interface{}
+	var config map[interface{}]interface{}
 	err = yaml.Unmarshal(data, &config)
 	if err != nil {
 		return "", err
@@ -113,15 +113,33 @@ func GetConfigValue(filePath, key string) (string, error) {
 
 	// 如果不包含"."，则直接返回对应的值
 	if !strings.Contains(key, ".") {
-		return config[key].(string), nil
+		value, ok := config[key]
+		if !ok {
+			return "", fmt.Errorf("key not found: %s", key)
+		}
+		return fmt.Sprintf("%v", value), nil
 	}
+
 	// 分解key以支持多级配置
 	keys := strings.Split(key, ".")
 
 	// 遍历map来获取对应的一级配置的map
 	for i := 0; i < len(keys)-1; i++ {
-		config = config[keys[i]].(map[string]interface{})
+		value, ok := config[keys[i]]
+		if !ok {
+			return "", fmt.Errorf("key not found: %s", keys[i])
+		}
+		config, ok = value.(map[interface{}]interface{})
+		if !ok {
+			return "", fmt.Errorf("invalid sub-config: %s", keys[i])
+		}
 	}
+
 	// 从一级配置的map中获取对应的值
-	return config[keys[len(keys)-1]].(string), nil
+	value, ok := config[keys[len(keys)-1]]
+	if !ok {
+		return "", fmt.Errorf("key not found: %s", keys[len(keys)-1])
+	}
+	return fmt.Sprintf("%v", value), nil
+
 }
