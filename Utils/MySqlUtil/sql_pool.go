@@ -1,8 +1,9 @@
-package Util
+package MySqlUtil
 
 import (
 	"database/sql"
 	"fmt"
+	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/ConfigUtil"
 	"sync"
 	"time"
 )
@@ -17,7 +18,7 @@ type MySQLPool struct {
 func InitSQLPool(maxConnections int) (*MySQLPool, error) {
 	pool := make(chan *sql.DB, maxConnections)
 
-	var config = GetConfigData()
+	var config = ConfigUtil.GetConfigData()
 
 	var path = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		config["database"].(map[interface{}]interface{})["user"],
@@ -101,7 +102,7 @@ func (p *MySQLPool) PeriodicallyCloseIdleConnections(interval time.Duration) {
 
 // createNewConnection 创建新的连接
 func (p *MySQLPool) createNewConnection() (*sql.DB, error) {
-	var config = GetConfigData()
+	var config = ConfigUtil.GetConfigData()
 
 	var path = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		config["database"].(map[interface{}]interface{})["user"],
