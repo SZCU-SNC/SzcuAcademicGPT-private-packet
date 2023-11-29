@@ -1,4 +1,4 @@
-package Entity
+package Result
 
 type APIResponse struct {
 	StatusCode int         `json:"status_code"`
@@ -35,17 +35,17 @@ func (r *APIResponse) Err(errorMessage string, statusCode int) *APIResponse {
 func getErrorMessage(statusCode int) string {
 	switch statusCode {
 	case ErrExpiredIdentity:
-		return "ErrExpiredIdentity"
+		return "Err Expired Identity"
 	case ErrFrequentCall:
-		return "ErrFrequentCall"
+		return "Err Frequent Call"
 	case ErrExecutionTimeout:
-		return "ErrExecutionTimeout"
+		return "Err Execution Timeout"
 	case ErrPermissionDenied:
-		return "ErrPermissionDenied"
+		return "Err Permission Denied"
 	case ErrCodeError:
-		return "ErrCodeError"
+		return "Err Code Error"
 	case ErrInvalidParameters:
-		return "ErrInvalidParameters"
+		return "Err Invalid Parameters"
 	default:
 		return ""
 	}

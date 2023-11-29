@@ -1,6 +1,7 @@
-package Util
+package EmailUtil
 
 import (
+	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/ConfigUtil"
 	"github.com/jordan-wright/email"
 	"log"
 	"net/smtp"
@@ -8,8 +9,8 @@ import (
 
 func SendEmail(to []string, subject string, context string, filePath string) {
 
-	server := GetConfigData()["email"].(map[interface{}]interface{})["server"].(string)
-	auth := GetConfigData()["email"].(map[interface{}]interface{})["auth"].(map[interface{}]interface{})
+	server := ConfigUtil.GetConfigData()["email"].(map[interface{}]interface{})["server"].(string)
+	auth := ConfigUtil.GetConfigData()["email"].(map[interface{}]interface{})["auth"].(map[interface{}]interface{})
 	username := auth["username"].(string)
 	password := auth["password"].(string)
 	host := auth["host"].(string)
