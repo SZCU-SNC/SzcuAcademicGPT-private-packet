@@ -1,4 +1,4 @@
-package Entity
+package Paper
 
 type Paper struct {
 	Title    string

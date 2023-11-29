@@ -1,4 +1,4 @@
-package Util
+package ConfigUtil
 
 import (
 	"fmt"
@@ -37,7 +37,7 @@ func ReadConfigFromYaml() (map[string]interface{}, error) {
 		return nil, fmt.Errorf("failed to get the main directory: %v", err)
 	}
 
-	envConfigFile, err := os.ReadFile(filepath.Join(mainDir + "config.yaml"))
+	envConfigFile, err := os.ReadFile(filepath.Join(mainDir, "config.yaml"))
 	if err != nil {
 		return nil, fmt.Errorf("failed to read the environment config file: %v", err)
 	}
@@ -68,14 +68,14 @@ func ReadConfigFromYaml() (map[string]interface{}, error) {
 
 var ENV_YAML string
 
-// 获取运行环境配置
+// GetENV 获取运行环境配置
 func GetENV() {
 	mainDir, err := os.Getwd()
 	if err != nil {
 		panic(err)
 	}
-	configfile := filepath.Join(mainDir, "config.yaml")
-	env, err := GetConfigValue(configfile, "environment")
+	configFile := filepath.Join(mainDir, "config.yaml")
+	env, err := GetConfigValue(configFile, "environment")
 	if err != nil {
 		panic(err)
 	}
@@ -96,7 +96,7 @@ func GetENV() {
 	fmt.Println("ENV_YAML: ", ENV_YAML)
 }
 
-// 直接获取配置项及其结果
+// GetConfigValue 直接获取配置项及其结果
 func GetConfigValue(filePath, key string) (string, error) {
 	// 读取YAML文件
 	data, err := os.ReadFile(filePath)

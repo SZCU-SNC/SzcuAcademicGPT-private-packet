@@ -1,13 +1,14 @@
-package Util
+package MySqlUtil
 
 import (
 	"database/sql"
 	"fmt"
+	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/ConfigUtil"
 )
 
 func InitializeDatabase() (*sql.DB, error) {
 
-	var config = GetConfigData()
+	var config = ConfigUtil.GetConfigData()
 
 	var path = fmt.Sprintf("%s:%s@tcp(%s:%d)/%s",
 		config["database"].(map[interface{}]interface{})["user"],
