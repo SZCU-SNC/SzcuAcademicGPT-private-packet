@@ -4,9 +4,9 @@ import (
 	"strconv"
 )
 
-// VerificationCode 邮箱、手机验证码
-func VerificationCode(userId int) string {
-	return "VerificationCode:" + strconv.Itoa(userId)
+// RegisterVerificationCode 注册用邮箱、手机验证码
+func RegisterVerificationCode(user string) string {
+	return "VerificationCode:Register:" + user
 }
 
 // CaptchaCode 图形验证码
