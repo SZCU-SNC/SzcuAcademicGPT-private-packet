@@ -5,8 +5,8 @@ import (
 )
 
 // RegisterVerificationCode 注册用邮箱、手机验证码
-func RegisterVerificationCode(userId int) string {
-	return "VerificationCode:Register:" + strconv.Itoa(userId)
+func RegisterVerificationCode(user string) string {
+	return "VerificationCode:Register:" + user
 }
 
 // CaptchaCode 图形验证码
