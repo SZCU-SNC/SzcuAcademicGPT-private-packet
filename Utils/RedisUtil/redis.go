@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/ConfigUtil"
 	"github.com/redis/go-redis/v9"
+	"time"
 )
 
 type RedisClient struct {
@@ -46,6 +47,15 @@ func (rc *RedisClient) Close() error {
 // Set 设置键值对
 func (rc *RedisClient) Set(key, value string) error {
 	err := rc.client.Set(context.Background(), key, value, 0).Err()
+	if err != nil {
+		return fmt.Errorf("设置键值对失败: %s", err)
+	}
+	return nil
+}
+
+// SetWihExpiration 设置有到期时间的键值对
+func (rc *RedisClient) SetWihExpiration(key, value string, exp time.Duration) error {
+	err := rc.client.Set(context.Background(), key, value, exp).Err()
 	if err != nil {
 		return fmt.Errorf("设置键值对失败: %s", err)
 	}
