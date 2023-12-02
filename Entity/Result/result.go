@@ -32,11 +32,14 @@ func (r *APIResponse) Err(errorMessage string, statusCode int) *APIResponse {
 	return r
 }
 
-func (r *APIResponse) MyErr(error MyError) *APIResponse {
+func (r *APIResponse) MyErr(error error) *APIResponse {
+
+	myErr := ConvertToMyError(error)
+
 	r.Success = false
-	r.Error = getErrorMessage(error.Code)
-	r.StatusCode = error.Code
-	r.Message = error.Message
+	r.Error = getErrorMessage(myErr.Code)
+	r.StatusCode = myErr.Code
+	r.Message = myErr.Message
 	return r
 }
 
