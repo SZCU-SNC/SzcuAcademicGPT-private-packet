@@ -32,6 +32,14 @@ func (r *APIResponse) Err(errorMessage string, statusCode int) *APIResponse {
 	return r
 }
 
+func (r *APIResponse) MyErr(error MyError) *APIResponse {
+	r.Success = false
+	r.Error = getErrorMessage(error.Code)
+	r.StatusCode = error.Code
+	r.Message = error.Message
+	return r
+}
+
 func getErrorMessage(statusCode int) string {
 	switch statusCode {
 	case ErrExpiredIdentity:
