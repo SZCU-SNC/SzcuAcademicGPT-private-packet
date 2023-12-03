@@ -56,7 +56,7 @@ func (cu *CryptoAESUtils) DecryptJSON(encryptedDataHex string) ([]byte, error) {
 		return nil, err
 	}
 
-	aesGCM, err := cipher.NewGCM(block)
+	aesGCM, err := cipher.NewGCMWithNonceSize(block, 16)
 	if err != nil {
 		return nil, err
 	}
