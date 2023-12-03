@@ -18,3 +18,7 @@ func UserToken(userId int) string {
 func CaptchaCode(user string) string {
 	return "CaptchaCode:" + user
 }
+
+func UserRole(userId int) string {
+	return "UserRole:" + strconv.Itoa(userId)
+}
