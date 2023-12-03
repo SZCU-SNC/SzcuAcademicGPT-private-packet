@@ -82,3 +82,57 @@ func (rc *RedisClient) Del(key string) error {
 	}
 	return nil
 }
+
+// HSet 设置哈希表字段的值
+func (rc *RedisClient) HSet(key, field, value string) error {
+	err := rc.client.HSet(context.Background(), key, field, value).Err()
+	if err != nil {
+		return fmt.Errorf("设置哈希表字段的值失败: %s", err)
+	}
+	return nil
+}
+
+// HGet 获取哈希表字段的值
+func (rc *RedisClient) HGet(key, field string) (string, error) {
+	val, err := rc.client.HGet(context.Background(), key, field).Result()
+	if err != nil {
+		return "", fmt.Errorf("获取哈希表字段的值失败: %s", err)
+	}
+	return val, nil
+}
+
+// LPush 将值推入列表的左端
+func (rc *RedisClient) LPush(key string, values ...string) error {
+	err := rc.client.LPush(context.Background(), key, values).Err()
+	if err != nil {
+		return fmt.Errorf("将值推入列表的左端失败: %s", err)
+	}
+	return nil
+}
+
+// RPush 将值推入列表的右端
+func (rc *RedisClient) RPush(key string, values ...string) error {
+	err := rc.client.RPush(context.Background(), key, values).Err()
+	if err != nil {
+		return fmt.Errorf("将值推入列表的右端失败: %s", err)
+	}
+	return nil
+}
+
+// LRange 获取列表的值
+func (rc *RedisClient) LRange(key string, start, stop int64) ([]string, error) {
+	vars, err := rc.client.LRange(context.Background(), key, start, stop).Result()
+	if err != nil {
+		return nil, fmt.Errorf("获取列表的值失败: %s", err)
+	}
+	return vars, nil
+}
+
+// LLen 获取列表的长度
+func (rc *RedisClient) LLen(key string) (int64, error) {
+	length, err := rc.client.LLen(context.Background(), key).Result()
+	if err != nil {
+		return 0, fmt.Errorf("获取列表的长度失败: %s", err)
+	}
+	return length, nil
+}

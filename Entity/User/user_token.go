@@ -5,7 +5,6 @@ import "encoding/json"
 type Token struct {
 	UserID int
 	IP     string
-	Role   []string
 }
 
 func (ut *Token) ToByte() ([]byte, error) {
