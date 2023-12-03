@@ -4,6 +4,7 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"crypto/rand"
+	"encoding/hex"
 	"errors"
 )
 
@@ -15,20 +16,20 @@ func NewCryptoAESUtils(key []byte) *CryptoAESUtils {
 	return &CryptoAESUtils{key: key}
 }
 
-func (cu *CryptoAESUtils) EncryptJSON(jsonData []byte) ([]byte, error) {
+func (cu *CryptoAESUtils) EncryptJSON(jsonData []byte) (string, error) {
 	block, err := aes.NewCipher(cu.key)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	aesGCM, err := cipher.NewGCM(block)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	iv := make([]byte, aesGCM.NonceSize())
 	if _, err := rand.Read(iv); err != nil {
-		return nil, err
+		return "", err
 	}
 
 	encryptedData := aesGCM.Seal(nil, iv, jsonData, nil)
@@ -37,10 +38,12 @@ func (cu *CryptoAESUtils) EncryptJSON(jsonData []byte) ([]byte, error) {
 	copy(result, iv)
 	copy(result[len(iv):], encryptedData)
 
-	return result, nil
+	return hex.EncodeToString(result), nil
 }
 
-func (cu *CryptoAESUtils) DecryptJSON(encryptedData []byte) ([]byte, error) {
+func (cu *CryptoAESUtils) DecryptJSON(encryptedDataHex string) ([]byte, error) {
+	encryptedData, err := hex.DecodeString(encryptedDataHex)
+
 	if len(encryptedData) < aes.BlockSize {
 		return nil, errors.New("invalid encrypted data")
 	}
