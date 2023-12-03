@@ -1,10 +1,13 @@
+// Package RedisUtil
+/*
+配置文件：
+redis:
+	address: my_addr
+	password: my_password
+	db: use_default_DB
+*/
 package RedisUtil
 
-//配置格式
-//redis:
-//	address: my_addr
-//	password: my_password
-//	db: use_default_DB
 import (
 	"context"
 	"fmt"
