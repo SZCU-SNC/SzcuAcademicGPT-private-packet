@@ -22,7 +22,7 @@ func (cu *CryptoAESUtils) EncryptJSON(jsonData []byte) (string, error) {
 		return "", err
 	}
 
-	aesGCM, err := cipher.NewGCM(block)
+	aesGCM, err := cipher.NewGCMWithNonceSize(block, 16)
 	if err != nil {
 		return "", err
 	}
