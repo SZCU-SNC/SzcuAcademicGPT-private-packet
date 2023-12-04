@@ -10,8 +10,8 @@ func RegisterVerificationCode(user string) string {
 }
 
 // UserToken 用户token
-func UserToken(userId int) string {
-	return "UserToken:" + strconv.Itoa(userId)
+func UserToken(userId string) string {
+	return "UserToken:" + userId
 }
 
 // CaptchaCode 图形验证码
