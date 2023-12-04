@@ -1,38 +1,57 @@
+// Package EmailUtil
+/*
+配置文件：
+email:
+	host: smtp.qq.com
+	port: 587
+	auth:
+		addr: your_email_account
+		password: your_authorization_code
+*/
 package EmailUtil
 
 import (
+	"fmt"
 	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/ConfigUtil"
-	"github.com/jordan-wright/email"
-	"log"
-	"net/smtp"
+	"gopkg.in/gomail.v2"
+	"os"
 )
 
-func SendEmail(to []string, subject string, context string, filePath string) {
+func SendEmail(to []string, subject string, context string, filePath string) error {
 
-	server := ConfigUtil.GetConfigData()["email"].(map[interface{}]interface{})["server"].(string)
+	host := ConfigUtil.GetConfigData()["email"].(map[interface{}]interface{})["host"].(string)
+	port := ConfigUtil.GetConfigData()["email"].(map[interface{}]interface{})["port"].(int)
+
 	auth := ConfigUtil.GetConfigData()["email"].(map[interface{}]interface{})["auth"].(map[interface{}]interface{})
-	username := auth["username"].(string)
+	addr := auth["addr"].(string)
 	password := auth["password"].(string)
-	host := auth["host"].(string)
 
-	e := email.NewEmail()
+	e := gomail.NewMessage()
 	//设置发送方的邮箱
-	e.From = username
+	e.SetHeader("From", addr)
+	e.SetHeader("To", to...)
 
-	e.To = to
-	e.Subject = subject
-	e.Text = []byte(context)
+	e.SetHeader("Subject", subject)
 
-	//副件
-	_, err := e.AttachFile(filePath)
-	if err != nil {
-		return
+	e.SetBody("text/html", context)
+
+	if filePath != "" {
+		_, err := os.Stat(filePath)
+		if err != nil {
+			if os.IsNotExist(err) {
+				return err // 文件不存在
+			}
+		}
+		//副件
+		e.Attach(filePath)
 	}
 
-	// 使用配置值进行发送邮件操作
-	err = e.Send(server, smtp.PlainAuth("", username, password, host))
+	d := gomail.NewDialer(host, port, addr, password)
 
-	if err != nil {
-		log.Fatal(err)
+	if err := d.DialAndSend(e); err != nil {
+		fmt.Printf("DialAndSend err %v:", err)
+		panic(err)
 	}
+
+	return nil
 }
