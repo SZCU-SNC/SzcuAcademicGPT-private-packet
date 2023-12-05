@@ -11,9 +11,10 @@ package RedisUtil
 import (
 	"context"
 	"fmt"
+	"time"
+
 	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/ConfigUtil"
 	"github.com/redis/go-redis/v9"
-	"time"
 )
 
 type RedisClient struct {
@@ -135,4 +136,22 @@ func (rc *RedisClient) LLen(key string) (int64, error) {
 		return 0, fmt.Errorf("获取列表的长度失败: %s", err)
 	}
 	return length, nil
+}
+
+// HGetAll 获取哈希表的所有字段和值
+func (rc *RedisClient) HashGetAll(key string) (map[string]string, error) {
+	val, err := rc.client.HGetAll(context.Background(), key).Result()
+	if err != nil {
+		return nil, fmt.Errorf("获取哈希表的所有字段和值失败: %s", err)
+	}
+	return val, nil
+}
+
+// HDel 删除哈希表字段
+func (rc *RedisClient) HDel(key string, fields ...string) error {
+	err := rc.client.HDel(context.Background(), key, fields...).Err()
+	if err != nil {
+		return fmt.Errorf("删除哈希表字段失败: %s", err)
+	}
+	return nil
 }
