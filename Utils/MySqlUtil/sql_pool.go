@@ -14,8 +14,10 @@ type MySQLPool struct {
 	mu             sync.Mutex
 }
 
-// InitSQLPool 初始化连接池
-func InitSQLPool(maxConnections int) (*MySQLPool, error) {
+var mySqlPool MySQLPool
+
+// InitMySQLPool 初始化连接池
+func InitMySQLPool(maxConnections int) (*MySQLPool, error) {
 	pool := make(chan *sql.DB, maxConnections)
 
 	var config = ConfigUtil.GetConfigData()
@@ -36,11 +38,15 @@ func InitSQLPool(maxConnections int) (*MySQLPool, error) {
 		}
 		pool <- db
 	}
-
-	return &MySQLPool{
+	mySqlPool = MySQLPool{
 		pool:           pool,
 		maxConnections: maxConnections,
-	}, nil
+	}
+
+	// 开启一个新的goroutine来每五分钟关闭空闲连接
+	go mySqlPool.PeriodicallyCloseIdleConnections(time.Minute * 5)
+
+	return &mySqlPool, nil
 }
 
 // GetConnectionMysql 获取mysql连接(ps:记得使用ReleaseConnectionMysql释放)
