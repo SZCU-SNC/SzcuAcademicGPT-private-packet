@@ -7,7 +7,7 @@ redis:
 	password: my_password
 	db: use_default_DB
 	poolSize: pool_size
-	poolTimeout: 阻塞超时时间 单位秒
+	poolTimeout: 阻塞超时时间 for example: 10s
 
 */
 import (
@@ -28,12 +28,13 @@ var redisClients redisClient
 // InitRedisPool 初始化Redis连接池
 func InitRedisPool() error {
 	var redisConfig = ConfigUtil.GetConfigData()["redis"].(map[interface{}]interface{})
+	var timeOut, _ = time.ParseDuration(redisConfig["poolTimeout"].(string))
 	pool := redis.NewClient(&redis.Options{
 		Addr:        fmt.Sprintf("%v", redisConfig["address"]),
 		Password:    fmt.Sprintf("%v", redisConfig["password"]),
 		DB:          redisConfig["db"].(int),
 		PoolSize:    redisConfig["poolSize"].(int),
-		PoolTimeout: redisConfig["poolTimeout"].(time.Duration) * time.Second,
+		PoolTimeout: timeOut,
 	})
 
 	// 测试连接
