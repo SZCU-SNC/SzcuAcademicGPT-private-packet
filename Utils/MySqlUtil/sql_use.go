@@ -1,6 +1,8 @@
 package MySqlUtil
 
-import "database/sql"
+import (
+	"database/sql"
+)
 
 // QueryRow 执行单行查询
 func QueryRow(query string, args ...interface{}) (*sql.Row, error) {
@@ -13,7 +15,11 @@ func QueryRow(query string, args ...interface{}) (*sql.Row, error) {
 	defer mySqlPool.ReleaseConnectionMysql(db)
 
 	row := db.QueryRow(query, args...)
-	// todo 写日志
+
+	if row.Err() != nil {
+		return nil, err
+	}
+
 	return row, nil
 }
 
