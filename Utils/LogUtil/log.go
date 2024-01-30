@@ -13,6 +13,7 @@ import (
 	"runtime"
 	"time"
 
+	"github.com/SZCU-SNC/SzcuAcademicGPT-private-packet/Utils/EmailUtil"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/natefinch/lumberjack.v2"
 )
@@ -25,10 +26,16 @@ const (
 
 type MyLogger struct {
 	*logrus.Logger
+	EmailConfig *EmailConfig
 }
 
 type ErrorHook struct {
 	ErrorLogger *logrus.Logger
+}
+
+// EmailConfig 结构体，用于存储邮件配置信息
+type EmailConfig struct {
+	To []string // 收件人邮箱列表
 }
 
 func NewLogger(serviceName string) *MyLogger {
@@ -82,10 +89,41 @@ func (logger *MyLogger) WithCaller() *logrus.Entry {
 	return logger.WithField("caller", getCaller())
 }
 
+func (logger *MyLogger) NotifyError(message string) {
+
+	logger.loadEmailConfig()
+
+	// 从配置中获取邮件收件人列表
+	to := logger.EmailConfig.To
+
+	// 设置邮件主题和内容
+	subject := "Error Notification"
+	content := "An error occurred: " + message
+
+	// 记录错误日志
+	logger.WithCaller().Error(message)
+
+	// 发送邮件
+	err := EmailUtil.SendEmail(to, subject, content, "")
+	if err != nil {
+		logger.Error("Failed to send error notification email: ", err)
+	}
+}
+
+func (logger *MyLogger) loadEmailConfig() {
+	if logger.EmailConfig == nil {
+
+		logger.EmailConfig = &EmailConfig{
+			To: []string{"recipient@example.com"},
+		}
+	}
+}
+
 // func main() {
 // 	serviceName := "security"
 // 	logger := NewLogger(serviceName)
 
 // 	logger.WithCaller().Info("这是一条普通信息")
 // 	logger.WithCaller().Error("这是一条错误信息")
+// 	logger.NotifyError("这是会发到邮箱一条错误信息")
 // }
