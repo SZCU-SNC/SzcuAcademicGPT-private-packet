@@ -23,6 +23,24 @@ func QueryRow(query string, args ...interface{}) (*sql.Row, error) {
 	return row, nil
 }
 
+// Query 执行多行查询
+func Query(query string, args ...interface{}) (*sql.Rows, error) {
+	// 获取连接
+	db, err := mySqlPool.GetConnectionMysql()
+	if err != nil {
+		return nil, err
+	}
+	// 释放连接
+	defer mySqlPool.ReleaseConnectionMysql(db)
+
+	rows, err := db.Query(query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return rows, nil
+}
+
 // Insert 执行插入操作
 func Insert(query string, args ...interface{}) (int64, error) {
 	db, err := mySqlPool.GetConnectionMysql()
